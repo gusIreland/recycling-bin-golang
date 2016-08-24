@@ -1,48 +1,51 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
 	"log"
 
+	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
 
-var currentID int
-
-var db *sql.DB
+var db *gorm.DB
 
 // inits db conn
 func init() {
-	db, err := sql.Open("postgres", "user=recycling dbname=recycling")
-	rows, err := db.Query("SELECT name FROM users WHERE age = $1", 4)
-	fmt.Println(rows)
+	db, err := gorm.Open("sqlite3", "recycling.db")
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
+
+	// Migrate the schemas
+	db.AutoMigrate(&Location{})
+	db.AutoMigrate(&Report{})
 }
 
 //DbFindLocation blah
 func DbFindLocation(id int) Location {
-	//TODO get id
-	// return empty Location if not found
-	return Location{}
+	location := Location{}
+	db.First(&location, id)
+	return location
 }
 
 //DbCreateLocation blah
 func DbCreateLocation(l Location) Location {
-	//TODO create location
+	db.Create(l)
 	return l
 }
 
 //DbDestroyLocation blah
 func DbDestroyLocation(id int) error {
-	//TODO delete location
-	return fmt.Errorf("Could not find Location with id of %d to delete", id)
+	location := Location{}
+	db.First(&location, id)
+	db.Delete(&location)
+	return nil
 }
 
 //DbIndexLocation blah
 func DbIndexLocation() []Location {
-	//TODO return all locations
+	locations := []Location{}
+	db.Select("").Find(&locations)
 	return nil
 }
