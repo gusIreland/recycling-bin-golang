@@ -35,7 +35,7 @@ var routes = Routes{
 	Route{
 		"LocationCreate",
 		"POST",
-		"/locations/",
+		"/locations",
 		LocationCreate,
 	},
 	Route{

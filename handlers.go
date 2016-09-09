@@ -50,8 +50,7 @@ func LocationCreate(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 	}
-
-	l := DbCreateLocation(location)
+	l := DbCreateLocation(&location)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(l); err != nil {
@@ -76,8 +75,7 @@ func ReportCreate(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 	}
-
-	l := DbCreateLocation(location)
+	l := DbCreateLocation(&location)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(l); err != nil {

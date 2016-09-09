@@ -7,19 +7,21 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var db *gorm.DB
+var db = gorm.DB{}
 
 // inits db conn
 func init() {
-	db, err := gorm.Open("sqlite3", "recycling.db")
+	var err error
+	db, err = gorm.Open("postgres", "host=localhost user=gorm dbname=gorm sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
-	// Migrate the schemas
 	db.AutoMigrate(&Location{})
 	db.AutoMigrate(&Report{})
+	//defer db.Close()
+
+	// Migrate the schemas
 }
 
 //DbFindLocation blah
@@ -30,8 +32,8 @@ func DbFindLocation(id int) Location {
 }
 
 //DbCreateLocation blah
-func DbCreateLocation(l Location) Location {
-	db.Create(l)
+func DbCreateLocation(l *Location) *Location {
+	db.Create(&l)
 	return l
 }
 
@@ -46,6 +48,6 @@ func DbDestroyLocation(id int) error {
 //DbIndexLocation blah
 func DbIndexLocation() []Location {
 	locations := []Location{}
-	db.Select("").Find(&locations)
-	return nil
+	db.Find(&locations)
+	return locations
 }
